@@ -26,27 +26,30 @@ public class ToDoList {
         System.out.println("5- Sair");
     
         System.out.println("Digite a opcao que voce quer: ");
-        int escolha = scanner.nextInt();
+        opcao = scanner.nextInt();
+        scanner.nextLine();
+                
         
- switch(opcao) {
+        switch(opcao) {
             case 1: 
                 int posicaoLivre = -1;
                 
                 for(int i = 0; i < tarefas.length; i++){
                     if (tarefas [i] == null){
-                        posicaoLivre = 1;
+                        posicaoLivre = i;
                         break;
                     } 
                 }
-            if(posicaoLivre == -1){
+            
+                if(posicaoLivre == -1){
                 System.out.println("A lista de tarefas esta cheia!");
-            }else{
-                System.out.println("Digite a tarefa:");
-                tarefas[posicaoLivre] = scanner.nextLine();
-                concluidas[posicaoLivre] = false;
-                System.out.println("Tarefa adicionada com sucesso");
-            }
-            break;  
+                }else{
+                    System.out.println("Digite a tarefa:");
+                    tarefas[posicaoLivre] = scanner.nextLine();
+                    concluidas[posicaoLivre] = false;
+                    System.out.println("Tarefa adicionada com sucesso");
+                }
+                break;  
             
         case 2:
             System.out.println("====MINHAS TAREFAS=====");
@@ -73,8 +76,8 @@ public class ToDoList {
            
         case 3:
             System.out.println("Digite o numero da tarefa que deseja concluir");
-            int numeroConcluir = scanner.nextInt();
             
+            int numeroConcluir = scanner.nextInt();
             int indiceConcluir = numeroConcluir -1;
             
             if(indiceConcluir >= 0 && indiceConcluir < tarefas.length && tarefas[indiceConcluir] != null){
@@ -85,6 +88,26 @@ public class ToDoList {
                 }else{
                 System.out.println("Tarefa invalida!");
             }
+        
+        case 4:
+            System.out.println("Digite o numero da tarefa que deseja excluir");
+            
+            int numeroExcluir = scanner.nextInt();
+            int indiceExcluir = numeroExcluir - 1;
+            
+            if(indiceExcluir >= 0 && indiceExcluir < tarefas.length && tarefas[indiceExcluir] != null){
+                  
+                  tarefas[indiceExcluir] = null;
+                  concluidas[indiceExcluir] = false;
+                  
+                  System.out.println("Tarefa excluida com sucesso");      
+            }else{
+                System.out.println("Tarefa invalida");
+            }
+            break;
+            
+        case 5:
+            System.out.println("Programa encerrado. Ate mais!");
         } 
         }
     }
