@@ -72,7 +72,7 @@ public class ToDoList {
                 System.out.println("Nenhuma tarefa cadastrada:");
             }
             
-            break;
+            break;      
            
         case 3:
             System.out.println("Digite o numero da tarefa que deseja concluir");
