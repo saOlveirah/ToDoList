@@ -8,32 +8,27 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 public class Tela_To_Do_List2 extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Tela_To_Do_List2.class.getName());
 
     DefaultTableModel model;
-    
+
     private static final String CONCLUIDA = "Concluida";
     private static final String NAO_CONCLUIDA = "Não concluida";
-    
+
     private final ArrayList<String> tarefas = new ArrayList<>();
     private final ArrayList<String> tarefasFiltradas = new ArrayList<>();
-   
 
     public Tela_To_Do_List2() {
         initComponents();
-        
-        setLocationRelativeTo(null); 
-        
+
+        setLocationRelativeTo(null);
+
         model = (DefaultTableModel) jTableTarefas.getModel();
-        
+
     }
 
-    
-    
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -123,66 +118,125 @@ public class Tela_To_Do_List2 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAdicionarTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarTarefaActionPerformed
-        if (jTextFieldDescricaoTarefa.getText().trim().isEmpty()){
+        if (jTextFieldDescricaoTarefa.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "A descrição não pode ser vazia");
             return;
         }
-        
-        if(hasTarefaRepetida(jTextFieldDescricaoTarefa.getText())){
+
+        if (hasTarefaRepetida(jTextFieldDescricaoTarefa.getText())) {
             JOptionPane.showMessageDialog(null, "A tarefa " + jTextFieldDescricaoTarefa.getText() + "já existe!");
             return;
         }
-        
+
         tarefas.add(jTextFieldDescricaoTarefa.getText() + ";" + NAO_CONCLUIDA);
-        
+
         preencherTabela();
-        
+
         jTextFieldDescricaoTarefa.setText("");
     }//GEN-LAST:event_jButtonAdicionarTarefaActionPerformed
 
-        public boolean hasTarefaRepetida(String novaTarefa){
-            for (String tarefa : tarefas){
-                String dados[] = tarefa.split(";");
-                
-                if(novaTarefa.toLowerCase().equals(dados[0].toLowerCase())){
+    public boolean hasTarefaRepetida(String novaTarefa) {
+        for (String tarefa : tarefas) {
+            String dados[] = tarefa.split(";");
+
+            if (novaTarefa.toLowerCase().equals(dados[0].toLowerCase())) {
                 return true;
             }
-            }
-            return false;
         }
-        
-        private void preencherTabela(){
-            ArrayList<String> listaTarefas;
-            
-            if(jComboBoxFiltroStatus.getSelectedIndex() > 0){
-                listaTarefas = tarefasFiltradas;    
-            }else{
-                listaTarefas = tarefas;
-            }
-            
-            model.setRowCount(0);
-            
-            for(String tarefa : listaTarefas){
-                String[] dados = tarefa.split(";");
-                
-                model.addRow(new Object[]{
-                    dados[0],
-                    dados[1]
-                });
-            }
+        return false;
+    }
+
+    private void preencherTabela() {
+        ArrayList<String> listaTarefas;
+
+        if (jComboBoxFiltroStatus.getSelectedIndex() > 0) {
+            listaTarefas = tarefasFiltradas;
+        } else {
+            listaTarefas = tarefas;
         }
+
+        model.setRowCount(0);
+
+        for (String tarefa : listaTarefas) {
+            String[] dados = tarefa.split(";");
+
+            model.addRow(new Object[]{
+                dados[0],
+                dados[1]
+            });
+        }
+    }
     private void jComboBoxFiltroStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFiltroStatusActionPerformed
-        
+
     }//GEN-LAST:event_jComboBoxFiltroStatusActionPerformed
 
     private void jButtonRemoverTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoverTarefaActionPerformed
+        int linhaSelecionada = jTableTarefas.getSelectedRow();
+
+        if (linhaSelecionada < 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma tarefa foi selecionada");
+            return;
+        }
+
+        int opcao = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir a tarefa?");
+
+        String tarefaSelecionada = recuperarTarefa(linhaSelecionada);
+
+        int indiceTarefaSelecionada = tarefas.indexOf(tarefaSelecionada);
+
+        if (opcao == JOptionPane.YES_OPTION) {
+            tarefas.remove(indiceTarefaSelecionada);
+            preencherTabela();
+        }
+
+        filtrarTabela();
+
+        preencherTabela();
 
     }//GEN-LAST:event_jButtonRemoverTarefaActionPerformed
 
-    private void jTextFieldDescricaoTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoTarefaActionPerformed
-        
-    }//GEN-LAST:event_jTextFieldDescricaoTarefaActionPerformed
+    private void filtrarTabela() {
+        int opcao = jComboBoxFiltroStatus.getSelectedIndex();
+        tarefasFiltradas.clear();
 
+        String[] dados;
+
+        for (String tarefa : tarefas) {
+            dados = tarefa.split(";");
+
+            switch (opcao) {
+                case 0:
+                    tarefasFiltradas.add(tarefa);
+                    break;
+                case 1:
+                    if (dados[1].equals(CONCLUIDA)) {
+                        tarefasFiltradas.add(tarefa);
+                    }
+                    break;
+                case 2:
+                    if (dados[1].equals(NAO_CONCLUIDA)){
+                    tarefasFiltradas.add(tarefa);
+                    }
+                    
+                    break;    
+                default:
+                    throw new AssertionError();
+            }
+        }
+    }
+
+    private String recuperarTarefa(int indiceTarefa) {
+        if (jComboBoxFiltroStatus.getSelectedIndex() > 0) {
+            return tarefasFiltradas.get(indiceTarefa);
+
+        } else {
+            return tarefas.get(indiceTarefa);
+        }
+    }
+
+    private void jTextFieldDescricaoTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoTarefaActionPerformed
+
+    }//GEN-LAST:event_jTextFieldDescricaoTarefaActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
