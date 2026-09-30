@@ -67,9 +67,11 @@ public class Tela_To_Do_List2 extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTableTarefas);
 
         jComboBoxFiltroStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Concluído", "Não concluído" }));
+        jComboBoxFiltroStatus.addItemListener(this::jComboBoxFiltroStatusItemStateChanged);
         jComboBoxFiltroStatus.addActionListener(this::jComboBoxFiltroStatusActionPerformed);
 
         jButtonConcluirTarefa.setText("Concluir");
+        jButtonConcluirTarefa.addActionListener(this::jButtonConcluirTarefaActionPerformed);
 
         jButtonRemoverTarefa.setText("Remover");
         jButtonRemoverTarefa.addActionListener(this::jButtonRemoverTarefaActionPerformed);
@@ -237,6 +239,36 @@ public class Tela_To_Do_List2 extends javax.swing.JFrame {
     private void jTextFieldDescricaoTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoTarefaActionPerformed
 
     }//GEN-LAST:event_jTextFieldDescricaoTarefaActionPerformed
+
+    private void jButtonConcluirTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConcluirTarefaActionPerformed
+        int linhaSelecionada = jTableTarefas.getSelectedRow();
+        
+        if (linhaSelecionada < 0){
+            JOptionPane.showMessageDialog(null, "Nenhuma tarefa selecionada");
+            return;
+        }
+        
+        
+        String tarefaSelecionada = recuperarTarefa(linhaSelecionada);
+        
+        int indiceTarefaSelecionada = tarefas.indexOf(tarefaSelecionada);
+        
+        String[] dados = tarefas.get(indiceTarefaSelecionada).split(";");
+        
+        tarefas.set(indiceTarefaSelecionada, dados[0] + ";" + CONCLUIDA);
+        
+        filtrarTabela();
+        
+        preencherTabela();
+    }//GEN-LAST:event_jButtonConcluirTarefaActionPerformed
+
+    private void jComboBoxFiltroStatusItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxFiltroStatusItemStateChanged
+        filtrarTabela();
+        
+        preencherTabela();
+        
+        
+    }//GEN-LAST:event_jComboBoxFiltroStatusItemStateChanged
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
